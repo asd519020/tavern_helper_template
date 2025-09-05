@@ -45,7 +45,13 @@ function common_path(lhs: string, rhs: string) {
 }
 
 function glob_script_files() {
+<<<<<<< HEAD
   const files: string[] = fs.globSync(`src/**/index.{ts,js}`);
+=======
+  const files: string[] = fs
+    .globSync(`src/**/index.{ts,js}`)
+    .filter(file => process.env.CI !== 'true' || !fs.readFileSync(path.join(__dirname, file)).includes('@no-ci'));
+>>>>>>> 0de1277acdcd290241c937e8e21f28b673f4558a
 
   const results: string[] = [];
   const handle = (file: string) => {
