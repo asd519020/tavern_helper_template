@@ -10,6 +10,10 @@ import TerserPlugin from 'terser-webpack-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { VueLoaderPlugin } from 'vue-loader';
 import webpack from 'webpack';
+<<<<<<< HEAD
+=======
+import WebpackObfuscator from 'webpack-obfuscator';
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
 const require = createRequire(import.meta.url);
 const HTMLInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default;
 
@@ -45,7 +49,13 @@ function common_path(lhs: string, rhs: string) {
 }
 
 function glob_script_files() {
+<<<<<<< HEAD
   const files: string[] = fs.globSync(`src/**/index.{ts,js}`);
+=======
+  const files: string[] = fs
+    .globSync(`src/**/index.{ts,js}`)
+    .filter(file => process.env.CI !== 'true' || !fs.readFileSync(path.join(__dirname, file)).includes('@no-ci'));
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
 
   const results: string[] = [];
   const handle = (file: string) => {
@@ -81,6 +91,10 @@ function watch_it(compiler: webpack.Compiler) {
       console.info(`[Listener] 已启动酒馆监听服务, 正在监听: http://0.0.0.0:${port}`);
       io.on('connect', socket => {
         console.info(`[Listener] 成功连接到酒馆网页 '${socket.id}', 初始化推送...`);
+<<<<<<< HEAD
+=======
+        io.emit('iframe_updated');
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
         socket.on('disconnect', reason => {
           console.info(`[Listener] 与酒馆网页 '${socket.id}' 断开连接: ${reason}`);
         });
@@ -95,6 +109,10 @@ function watch_it(compiler: webpack.Compiler) {
 }
 
 function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Configuration {
+<<<<<<< HEAD
+=======
+  const should_obfuscate = fs.readFileSync(path.join(__dirname, entry.script), 'utf-8').includes('@obfuscate');
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
   const script_filepath = path.parse(entry.script);
 
   return (_env, argv) => ({
@@ -262,7 +280,25 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             },
           }),
         ]
+<<<<<<< HEAD
     ).concat({ apply: watch_it }, new VueLoaderPlugin()),
+=======
+    )
+      .concat({ apply: watch_it }, new VueLoaderPlugin())
+      .concat(
+        should_obfuscate
+          ? [
+              new WebpackObfuscator({
+                controlFlowFlattening: true,
+                numbersToExpressions: true,
+                selfDefending: true,
+                simplify: true,
+                splitStrings: true,
+              }),
+            ]
+          : [],
+      ),
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
     optimization: {
       minimize: true,
       minimizer: [
@@ -300,8 +336,12 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
         },
       },
     },
+<<<<<<< HEAD
     externals: [
       ({ context, request }, callback) => {
+=======
+    externals: ({ context, request }, callback) => {
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
         if (!context || !request) {
           return callback();
         }
@@ -333,7 +373,10 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
         }
         return callback(null, 'module-import https://testingcf.jsdelivr.net/npm/' + request + '/+esm');
       },
+<<<<<<< HEAD
     ],
+=======
+>>>>>>> 31623cc5d8ccc8586b1c419243904ec1ce06c18f
   });
 }
 
